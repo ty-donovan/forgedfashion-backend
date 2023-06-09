@@ -1,14 +1,14 @@
 const express = require("express")
-// const app = express()
-const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST)
+const app = express()
+const stripe = require("stripe")("sk_test_51NG5A8DKLQI0c41jkT8Irv0G9UCPVgsjLciLrWhpsLftpotFWnnGwJwh42NQ794ZMORzJYnQAhEp38KqocBhogk100wuMYtNwe")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 var router = express.Router();
 
-// app.use(bodyParser.urlencoded({ extended: true }))
-// app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
-// app.use(cors())
+app.use(cors())
 
 router.post("/", async (req, res) => {
 	let { amount, id } = req.body
@@ -20,7 +20,6 @@ router.post("/", async (req, res) => {
 			payment_method: id,
 			confirm: true
 		})
-		console.log("Payment", payment)
 		res.json({
 			message: "Payment successful",
 			success: true
@@ -33,9 +32,5 @@ router.post("/", async (req, res) => {
 		})
 	}
 })
-
-// app.listen(process.env.PORT, () => {
-// 	console.log("Sever is listening on port 9000")
-// })
 
 module.exports = router;

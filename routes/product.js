@@ -2,7 +2,15 @@ var express = require("express");
 const axios = require("axios");
 var router = express.Router();
 const { db } = require("./firebase");
-const { doc, updateDoc, getDoc } = require("firebase/firestore");
+const { doc, updateDoc, getDoc, setDoc } = require("firebase/firestore");
+
+router.put("/add-cart/:userUID", async (req, res, next) => {
+  const userUID = req.params.userUID;
+  const docRef = doc(db, "carts", userUID);
+  setDoc(docRef, {
+    items: [],
+  });
+});
 
 router.put("/add-to-cart/:userUID", async (req, res, next) => {
   const userUID = req.params.userUID;

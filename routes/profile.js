@@ -1,22 +1,12 @@
 var express = require("express");
 var router = express.Router();
-const { db, storage, auth } = require("./firebase");
+const { db, auth } = require("./firebase");
 const {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
 } = require("firebase/auth");
-const { doc, collection, setDoc } = require("firebase/firestore");
-
-// listens to the state of the user
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("User logged in:", user);
-  } else {
-    console.log("User logged out");
-  }
-});
+const { doc, setDoc } = require("firebase/firestore");
 
 // sign-up
 router.post("/sign-up", function (req, res) {
@@ -47,7 +37,6 @@ const addNewUserToDatabase = async (userID, email) => {
     await setDoc(doc(db, "users", userID), {
       email: email,
     });
-    console.log("User created successfully");
   } catch (error) {
     console.log("Error creating user:", error);
   }
@@ -68,6 +57,8 @@ router.post("/login", function (req, res) {
       console.log("Error logging in:", errorMessage);
       if (errorCode === "auth/user-not-found") {
         res.status(404).send("User not found");
+      } else if (errorCode === "auth/wrong-password") {
+        res.status(401).send("Incorrect password");
       } else {
         res.status(errorCode).send(errorMessage);
       }
